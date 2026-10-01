@@ -11,7 +11,7 @@
     html, body {
       height: 100%;
       overflow: hidden;
-      background: #030308;
+      background: #020206;
       font-family: 'Outfit', system-ui, sans-serif;
       -webkit-font-smoothing: antialiased;
     }
@@ -21,15 +21,20 @@
     .vignette {
       position: fixed; inset: 0; z-index: 3;
       pointer-events: none;
-      background: radial-gradient(ellipse at 50% 42%, transparent 20%, rgba(0,0,0,0.78) 100%);
+      background: radial-gradient(ellipse at 50% 40%, transparent 15%, rgba(0,0,0,0.82) 100%);
     }
 
     .ambient {
       position: fixed; inset: 0; z-index: 0; pointer-events: none;
       background:
-        radial-gradient(ellipse 90% 55% at 15% 15%, rgba(170, 70, 210, 0.14), transparent),
-        radial-gradient(ellipse 80% 55% at 85% 75%, rgba(255, 80, 130, 0.11), transparent),
-        radial-gradient(ellipse 70% 45% at 50% 95%, rgba(70, 130, 255, 0.09), transparent);
+        radial-gradient(ellipse 100% 60% at 10% 10%, rgba(160, 60, 200, 0.16), transparent),
+        radial-gradient(ellipse 90% 60% at 90% 80%, rgba(255, 70, 120, 0.12), transparent),
+        radial-gradient(ellipse 70% 50% at 50% 100%, rgba(60, 120, 255, 0.1), transparent);
+      animation: ambientPulse 10s ease-in-out infinite alternate;
+    }
+    @keyframes ambientPulse {
+      from { opacity: 0.85; }
+      to { opacity: 1; }
     }
 
     .scene {
@@ -42,106 +47,132 @@
       justify-content: center;
       text-align: center;
       padding: 1.5rem;
-      perspective: 1200px;
+      perspective: 1100px;
     }
 
     .text-block {
       transform-style: preserve-3d;
-      transition: transform 0.12s ease-out;
-      will-change: transform;
+      transition: transform 0.1s ease-out;
+      position: relative;
+    }
+
+    /* Soft light sweep across text after reveal */
+    .text-block::after {
+      content: "";
+      position: absolute;
+      top: -10%;
+      left: -30%;
+      width: 40%;
+      height: 120%;
+      background: linear-gradient(105deg,
+        transparent 0%,
+        rgba(255, 255, 255, 0.07) 45%,
+        rgba(255, 255, 255, 0.14) 50%,
+        rgba(255, 255, 255, 0.07) 55%,
+        transparent 100%);
+      transform: skewX(-18deg);
+      opacity: 0;
+      animation: sweep 2.8s ease 3.2s forwards;
+      pointer-events: none;
+    }
+    @keyframes sweep {
+      0% { left: -40%; opacity: 0; }
+      15% { opacity: 1; }
+      85% { opacity: 1; }
+      100% { left: 110%; opacity: 0; }
     }
 
     h1 {
       font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.5rem, 9.5vw, 5.8rem);
+      font-size: clamp(2.6rem, 9.8vw, 6rem);
       font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: 0.01em;
-      color: #fff;
+      line-height: 1.08;
+      letter-spacing: 0.015em;
     }
 
     h1 .char {
       display: inline-block;
       opacity: 0;
-      transform: translateY(70px) scale(0.5);
-      color: #ffb8d4;
-      text-shadow:
-        0 0 20px rgba(255, 160, 200, 0.55),
-        0 0 50px rgba(200, 140, 255, 0.3);
-      animation: reveal 0.95s cubic-bezier(0.16, 1.15, 0.3, 1) forwards;
+      transform: translateY(85px) scale(0.4);
+      animation: elasticIn 1.05s cubic-bezier(0.22, 1.4, 0.36, 1) forwards;
     }
 
-    /* Soft rainbow tint via separate span layers if needed – keep solid for Safari */
-    h1 .char.pink { color: #ff9ec8; text-shadow: 0 0 22px rgba(255, 150, 200, 0.6), 0 0 50px rgba(255, 120, 180, 0.25); }
-    h1 .char.purple { color: #e0b8ff; text-shadow: 0 0 22px rgba(200, 150, 255, 0.55), 0 0 50px rgba(180, 120, 255, 0.25); }
-    h1 .char.blue { color: #b0d0ff; text-shadow: 0 0 22px rgba(150, 190, 255, 0.5), 0 0 50px rgba(120, 160, 255, 0.2); }
-    h1 .char.mint { color: #a0f0e0; text-shadow: 0 0 22px rgba(140, 240, 220, 0.5), 0 0 50px rgba(100, 220, 200, 0.2); }
-    h1 .char.gold { color: #ffe0a8; text-shadow: 0 0 22px rgba(255, 210, 140, 0.55), 0 0 50px rgba(255, 190, 100, 0.2); }
+    h1 .char.pink   { color: #ff9ec8; text-shadow: 0 0 18px rgba(255,150,200,0.65), 0 0 45px rgba(255,120,180,0.3); }
+    h1 .char.purple { color: #e2b8ff; text-shadow: 0 0 18px rgba(200,150,255,0.6), 0 0 45px rgba(180,120,255,0.28); }
+    h1 .char.blue   { color: #b0d4ff; text-shadow: 0 0 18px rgba(150,190,255,0.55), 0 0 45px rgba(120,160,255,0.25); }
+    h1 .char.mint   { color: #9ef0e0; text-shadow: 0 0 18px rgba(140,240,220,0.55), 0 0 45px rgba(100,220,200,0.25); }
+    h1 .char.gold   { color: #ffe4a8; text-shadow: 0 0 18px rgba(255,210,140,0.6), 0 0 45px rgba(255,190,100,0.25); }
 
-    @keyframes reveal {
-      0% {
-        opacity: 0;
-        transform: translateY(70px) scale(0.5);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+    @keyframes elasticIn {
+      0%   { opacity: 0; transform: translateY(85px) scale(0.4); }
+      60%  { opacity: 1; transform: translateY(-8px) scale(1.06); }
+      80%  { transform: translateY(3px) scale(0.98); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Gentle continuous breath after all letters are in */
+    h1 {
+      animation: breath 5s ease-in-out 3.5s infinite;
+    }
+    @keyframes breath {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.08); }
     }
 
     .line { display: block; }
 
     .wave {
       display: inline-block;
-      font-size: 0.9em;
+      font-size: 0.88em;
       transform-origin: 70% 80%;
-      animation: wave 2s ease-in-out infinite;
-      filter: drop-shadow(0 0 14px rgba(255, 190, 130, 0.7));
+      animation: wave 1.9s ease-in-out infinite;
+      filter: drop-shadow(0 0 14px rgba(255, 190, 130, 0.75));
     }
     @keyframes wave {
       0%, 100% { transform: rotate(0); }
-      12% { transform: rotate(22deg); }
-      24% { transform: rotate(-14deg); }
-      36% { transform: rotate(18deg); }
-      48% { transform: rotate(-10deg); }
-      60% { transform: rotate(12deg); }
+      12% { transform: rotate(24deg); }
+      24% { transform: rotate(-15deg); }
+      36% { transform: rotate(20deg); }
+      48% { transform: rotate(-11deg); }
+      60% { transform: rotate(13deg); }
     }
 
     .divider {
       width: 0;
-      height: 1px;
-      margin: 1.6rem auto 0;
-      background: linear-gradient(90deg, transparent, rgba(255, 200, 230, 0.55), transparent);
+      height: 1.5px;
+      margin: 1.7rem auto 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 200, 230, 0.6), transparent);
+      box-shadow: 0 0 12px rgba(255, 180, 220, 0.35);
       opacity: 0;
-      animation: expandLine 1.3s ease 2.5s forwards;
+      animation: expandLine 1.2s ease 2.4s forwards;
     }
     @keyframes expandLine {
-      to { width: min(260px, 48vw); opacity: 1; }
+      to { width: min(280px, 52vw); opacity: 1; }
     }
 
     .subtitle {
-      margin-top: 1.4rem;
+      margin-top: 1.5rem;
       font-size: clamp(0.85rem, 2.5vw, 1.1rem);
       font-weight: 300;
-      letter-spacing: 0.3em;
+      letter-spacing: 0.32em;
       text-transform: uppercase;
-      color: rgba(255, 255, 255, 0.42);
+      color: rgba(255, 255, 255, 0.4);
       opacity: 0;
-      animation: fadeUp 1.4s ease 2.8s forwards;
+      animation: fadeUp 1.3s ease 2.7s forwards;
     }
 
     .from {
-      margin-top: 1rem;
-      font-size: clamp(0.95rem, 2.6vw, 1.2rem);
+      margin-top: 1.05rem;
+      font-size: clamp(1rem, 2.7vw, 1.25rem);
       font-weight: 400;
-      letter-spacing: 0.08em;
-      color: rgba(255, 210, 230, 0.8);
+      letter-spacing: 0.09em;
+      color: rgba(255, 215, 235, 0.85);
       opacity: 0;
-      animation: fadeUp 1.4s ease 3.3s forwards;
+      animation: fadeUp 1.3s ease 3.2s forwards;
     }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
+      from { opacity: 0; transform: translateY(18px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
@@ -152,13 +183,13 @@
     .floating {
       position: absolute;
       opacity: 0;
-      animation: rise 7.5s ease-in forwards;
-      filter: drop-shadow(0 0 8px rgba(255, 140, 180, 0.4));
+      animation: rise 7s ease-in forwards;
+      filter: drop-shadow(0 0 9px rgba(255, 140, 180, 0.45));
     }
     @keyframes rise {
-      0% { opacity: 0; transform: translateY(0) scale(0.35) rotate(0); }
-      12% { opacity: 0.9; }
-      100% { opacity: 0; transform: translateY(-115vh) scale(1.35) rotate(28deg); }
+      0% { opacity: 0; transform: translateY(0) scale(0.3) rotate(0); }
+      10% { opacity: 0.92; }
+      100% { opacity: 0; transform: translateY(-120vh) scale(1.4) rotate(32deg); }
     }
   </style>
 </head>
@@ -181,46 +212,46 @@
     const lines = ["Auf Wiedersehen", "Frau Uggowitzer "];
     const colors = ["pink", "purple", "blue", "mint", "gold"];
     const title = document.getElementById("title");
-    let delay = 0.18;
+    let delay = 0.15;
     let html = "";
-    let colorIdx = 0;
+    let ci = 0;
 
     lines.forEach((line, li) => {
       html += `<span class="line">`;
       [...line].forEach(ch => {
-        const cls = colors[colorIdx % colors.length];
-        colorIdx++;
+        const cls = colors[ci % colors.length];
+        ci++;
         html += `<span class="char ${cls}" style="animation-delay:${delay}s">${ch === " " ? "&nbsp;" : ch}</span>`;
-        delay += 0.048;
+        delay += 0.045;
       });
       html += `</span>`;
-      if (li === 0) delay += 0.28;
+      if (li === 0) delay += 0.25;
     });
-    html += `<span class="char wave" style="animation-delay:${delay + 0.15}s">👋</span>`;
+    html += `<span class="char wave" style="animation-delay:${delay + 0.12}s">👋</span>`;
     title.innerHTML = html;
 
-    // Floating icons
+    // Floating
     const layer = document.getElementById("hearts");
     const icons = ["💖", "✨", "🌸", "💫", "🦋", "🌟", "💕"];
     function spawn() {
       const el = document.createElement("div");
       el.className = "floating";
       el.textContent = icons[Math.floor(Math.random() * icons.length)];
-      el.style.left = 3 + Math.random() * 94 + "%";
-      el.style.bottom = "-40px";
-      el.style.fontSize = (1 + Math.random() * 1.5) + "rem";
-      el.style.animationDuration = (5.5 + Math.random() * 4.5) + "s";
+      el.style.left = 2 + Math.random() * 96 + "%";
+      el.style.bottom = "-45px";
+      el.style.fontSize = (1.05 + Math.random() * 1.55) + "rem";
+      el.style.animationDuration = (5.2 + Math.random() * 4.8) + "s";
       layer.appendChild(el);
       setTimeout(() => el.remove(), 11000);
     }
-    setInterval(spawn, 520);
-    for (let i = 0; i < 7; i++) setTimeout(spawn, i * 320);
+    setInterval(spawn, 460);
+    for (let i = 0; i < 8; i++) setTimeout(spawn, i * 280);
 
-    // Gentle 3D tilt
+    // Tilt
     const block = document.getElementById("textBlock");
     document.addEventListener("mousemove", e => {
-      const x = (e.clientX / innerWidth - 0.5) * 12;
-      const y = (e.clientY / innerHeight - 0.5) * -8;
+      const x = (e.clientX / innerWidth - 0.5) * 14;
+      const y = (e.clientY / innerHeight - 0.5) * -9;
       block.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
     });
 
@@ -236,7 +267,7 @@
     addEventListener("resize", resize);
     resize();
 
-    const palette = ["#ff9ec8", "#e0b8ff", "#b0d0ff", "#a0f0e0", "#ffe0a8", "#ffb08a"];
+    const palette = ["#ff9ec8", "#e2b8ff", "#b0d4ff", "#9ef0e0", "#ffe4a8", "#ffb08a"];
 
     class Particle {
       constructor(burst = false) {
@@ -245,51 +276,51 @@
       }
       reset(init) {
         if (this.burst) {
-          this.x = w * 0.5 + (Math.random() - 0.5) * 100;
-          this.y = h * 0.4 + (Math.random() - 0.5) * 50;
+          this.x = w * 0.5 + (Math.random() - 0.5) * 120;
+          this.y = h * 0.38 + (Math.random() - 0.5) * 55;
           const a = Math.random() * Math.PI * 2;
-          const s = 1.8 + Math.random() * 5.5;
+          const s = 2 + Math.random() * 6;
           this.vx = Math.cos(a) * s;
-          this.vy = Math.sin(a) * s - 1.2;
+          this.vy = Math.sin(a) * s - 1.5;
           this.life = 0;
-          this.max = 45 + Math.random() * 35;
-          this.size = 1.4 + Math.random() * 2.8;
+          this.max = 50 + Math.random() * 40;
+          this.size = 1.5 + Math.random() * 3;
         } else {
           this.x = Math.random() * w;
-          this.y = init ? Math.random() * h : h + 15;
-          this.vx = (Math.random() - 0.5) * 0.35;
-          this.vy = -(0.18 + Math.random() * 0.75);
+          this.y = init ? Math.random() * h : h + 12;
+          this.vx = (Math.random() - 0.5) * 0.4;
+          this.vy = -(0.2 + Math.random() * 0.85);
           this.life = 0;
-          this.max = 220 + Math.random() * 180;
-          this.size = 0.7 + Math.random() * 2.1;
+          this.max = 200 + Math.random() * 200;
+          this.size = 0.7 + Math.random() * 2.3;
         }
         this.color = palette[Math.floor(Math.random() * palette.length)];
-        this.alpha = 0.3 + Math.random() * 0.45;
-        this.tw = Math.random() * 8;
+        this.alpha = 0.32 + Math.random() * 0.48;
+        this.tw = Math.random() * 10;
       }
       update() {
         this.x += this.vx;
         this.y += this.vy;
         if (this.burst) {
-          this.vy += 0.055;
-          this.vx *= 0.985;
+          this.vy += 0.06;
+          this.vx *= 0.982;
         } else {
-          this.x += Math.sin(this.tw) * 0.18;
-          this.tw += 0.022;
+          this.x += Math.sin(this.tw) * 0.2;
+          this.tw += 0.024;
         }
         this.life++;
-        if (this.life > this.max || this.y < -25) {
+        if (this.life > this.max || this.y < -30) {
           if (this.burst) this.dead = true;
           else this.reset(false);
         }
       }
       draw() {
-        const fade = this.life < 20 ? this.life / 20 : this.life > this.max - 25 ? (this.max - this.life) / 25 : 1;
+        const fade = this.life < 18 ? this.life / 18 : this.life > this.max - 28 ? (this.max - this.life) / 28 : 1;
         ctx.globalAlpha = this.alpha * fade;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = 11;
         ctx.shadowColor = this.color;
         ctx.fill();
         ctx.shadowBlur = 0;
@@ -301,22 +332,22 @@
       constructor() { this.points = []; this.reset(); }
       reset() {
         this.x = Math.random() * w;
-        this.y = h + 8;
-        this.vx = (Math.random() - 0.5) * 1.8;
-        this.vy = -(1.8 + Math.random() * 3);
+        this.y = h + 6;
+        this.vx = (Math.random() - 0.5) * 2;
+        this.vy = -(2 + Math.random() * 3.2);
         this.life = 0;
-        this.max = 30 + Math.random() * 30;
+        this.max = 32 + Math.random() * 32;
         this.color = palette[Math.floor(Math.random() * palette.length)];
         this.points = [];
       }
       update() {
         this.x += this.vx;
         this.y += this.vy;
-        this.vy += 0.03;
+        this.vy += 0.032;
         this.points.push({ x: this.x, y: this.y });
-        if (this.points.length > 12) this.points.shift();
+        if (this.points.length > 13) this.points.shift();
         this.life++;
-        if (this.life > this.max || this.y < -30) this.reset();
+        if (this.life > this.max || this.y < -35) this.reset();
       }
       draw() {
         if (this.points.length < 2) return;
@@ -327,24 +358,24 @@
         g.addColorStop(0, "transparent");
         g.addColorStop(1, this.color);
         ctx.strokeStyle = g;
-        ctx.lineWidth = 1.6;
+        ctx.lineWidth = 1.7;
         ctx.lineCap = "round";
-        ctx.globalAlpha = 0.5;
+        ctx.globalAlpha = 0.52;
         ctx.stroke();
         ctx.globalAlpha = 1;
       }
     }
 
-    const particles = Array.from({ length: 80 }, () => new Particle());
-    const sparks = Array.from({ length: 10 }, () => new Spark());
+    const particles = Array.from({ length: 90 }, () => new Particle());
+    const sparks = Array.from({ length: 12 }, () => new Spark());
     let bursts = [];
 
     setTimeout(() => {
-      for (let i = 0; i < 48; i++) bursts.push(new Particle(true));
-    }, 2800);
+      for (let i = 0; i < 60; i++) bursts.push(new Particle(true));
+    }, 2650);
 
     function loop() {
-      ctx.fillStyle = "rgba(3, 3, 8, 0.22)";
+      ctx.fillStyle = "rgba(2, 2, 6, 0.2)";
       ctx.fillRect(0, 0, w, h);
       particles.forEach(p => { p.update(); p.draw(); });
       sparks.forEach(s => { s.update(); s.draw(); });
